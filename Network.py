@@ -65,7 +65,7 @@ dropout = 0.2
 
 batch_size = 10
 
-np_epochs = 10
+np_epochs = 1000
 
 # Initialising the CNN
 classifier = Sequential()
@@ -73,26 +73,49 @@ classifier = Sequential()
 classifier.add(Convolution2D(32, 3, 3, input_shape=x_train[0].shape, activation='relu'))
 classifier.add(Convolution2D(32, 3, 3, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
 classifier.add(MaxPooling2D(pool_size=(2, 2)))
-classifier.add(Convolution2D(64, 3, 3, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
-classifier.add(Convolution2D(64, 3, 3, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
+classifier.add(Convolution2D(64, 2, 2, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
 classifier.add(MaxPooling2D(pool_size=(2, 2)))
-classifier.add(Convolution2D(128, 3, 3, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
-classifier.add(Convolution2D(128, 3, 3, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
+classifier.add(Convolution2D(128, 2, 2, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
 classifier.add(MaxPooling2D(pool_size=(2, 2)))
 
 classifier.add(Flatten())
-classifier.add(Dense(output_dim=512, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
-classifier.add(Dropout(dropout))
-classifier.add(Dense(output_dim=256, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
-classifier.add(Dropout(dropout))
-classifier.add(Dense(output_dim=128, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
-classifier.add(Dropout(dropout))
-classifier.add(Dense(output_dim=64, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
-classifier.add(Dropout(dropout))
-classifier.add(Dense(output_dim=30, activation='softmax'))
+
+# classifier.add(Dropout(dropout))
+classifier.add(Dense(output_dim=500, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
+# classifier.add(Dropout(dropout))
+classifier.add(Dense(output_dim=500, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
+# classifier.add(Dropout(dropout))
+classifier.add(Dense(output_dim=30, activation='tanh'))
+
+
+# classifier.add(Convolution2D(32, 3, 3, input_shape=x_train[0].shape, activation='relu'))
+# classifier.add(Convolution2D(32, 3, 3, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
+# classifier.add(MaxPooling2D(pool_size=(2, 2)))
+# classifier.add(Convolution2D(64, 3, 3, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
+# classifier.add(Convolution2D(64, 3, 3, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
+# classifier.add(MaxPooling2D(pool_size=(2, 2)))
+# classifier.add(Convolution2D(128, 3, 3, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
+# classifier.add(Convolution2D(128, 3, 3, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
+# classifier.add(MaxPooling2D(pool_size=(2, 2)))
+#
+# classifier.add(Flatten())
+#
+# classifier.add(Dense(output_dim=2048, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
+# classifier.add(Dense(output_dim=1024, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
+# classifier.add(Dense(output_dim=1024, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
+# # classifier.add(Dropout(dropout))
+# classifier.add(Dense(output_dim=512, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
+# # classifier.add(Dropout(dropout))
+# classifier.add(Dense(output_dim=256, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
+# # classifier.add(Dropout(dropout))
+# classifier.add(Dense(output_dim=128, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
+# # classifier.add(Dropout(dropout))
+# classifier.add(Dense(output_dim=64, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
+# # classifier.add(Dropout(dropout))
+# classifier.add(Dense(output_dim=30, activation='tanh'))
 
 # Compiling the CNN
-classifier.compile(optimizer='adagrad', loss='mean_squared_error', metrics=[metrics.mean_squared_error])
+classifier.compile(optimizer='adagrad', loss='mean_squared_error', metrics=['accuracy', metrics.mean_squared_error])
  
 classifier.summary()
 
