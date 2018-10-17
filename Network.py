@@ -65,7 +65,7 @@ dropout = 0.2
 
 batch_size = 10
 
-np_epochs = 200
+np_epochs = 10
 
 # Initialising the CNN
 classifier = Sequential()
@@ -92,19 +92,19 @@ classifier.add(Dropout(dropout))
 classifier.add(Dense(output_dim=30, activation='softmax'))
 
 # Compiling the CNN
-classifier.compile(optimizer='adam', loss='mean_squared_error', metrics=[metrics.categorical_accuracy, metrics.mean_squared_error])
+classifier.compile(optimizer='adagrad', loss='mean_squared_error', metrics=[metrics.mean_squared_error])
  
 classifier.summary()
 
 # Plot the graph
 if not os.path.exists('TFlogs'):
-    os.makedev('TFlogs')
+    os.makedirs('TFlogs')
 
 
 tensorboard = TensorBoard(log_dir='TFlogs/logs/{}'.format(time()))
 
 history = classifier.fit(x=x_train, y=y_train, batch_size=batch_size, 
-                         epochs=np_epochs, verbose=1, callbacks=[tensorboard])
+                         epochs=np_epochs, verbose=1, callbacks=[tensorboard], validation_data=(x_test, y_test))
 
 metrics = classifier.evaluate(x_test, y_test, batch_size=batch_size)
 
@@ -128,7 +128,7 @@ f.close()
 # Get Notification Using PyMail
 pymail = PyMail.pymail()
 pymail.set_sent_address('pranjalab@gmail.com')
-pymail.set_subject("Training Complete with {} epochs".format(str(np_epochs))
+pymail.set_subject("Training Complete with {} epochs".format(str(np_epochs)))
 pymail.set_body("Accuracy: " + str(metrics[0]) + "%\n\nLoss:\n\n" + str(metrics[1]))
 pymail.send_mail()
 
