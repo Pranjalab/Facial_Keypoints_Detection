@@ -37,8 +37,8 @@ def load(train_flag=True):
     X = X.reshape(-1, 96, 96, 1)
     return X, y
 
-def display_pre(data, model):
-    y = model.predict(data)
+def display_pre(data, predict):
+    y = predict
     image = data.reshape(96, 96)
     plt.imshow(image, cmap='gray')
     plt.scatter(y[0::2] * 48 + 48, y[1::2] * 48 + 48, marker='o', s=10, c='r')
@@ -57,7 +57,8 @@ model.compile(optimizer='adagrad', loss='mean_squared_error', metrics=['accuracy
 
 x_submit, _ = load(False)
 
+predicts = model.predict(x_submit)
 
-
-
+i = 0
+display_pre(x_submit[i], predicts[i])
 
