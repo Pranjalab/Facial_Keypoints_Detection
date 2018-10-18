@@ -59,13 +59,13 @@ x_submit, _ = load(False)
 
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=.1)
 
-l2 = regularizers.l2(None)
-l1 = regularizers.l1(None)
+l2 = None
+l1 = None
 dropout = 0.2
 
 batch_size = 10
 
-np_epochs = 1000
+np_epochs = 150
 
 # Initialising the CNN
 classifier = Sequential()
@@ -80,14 +80,14 @@ classifier.add(MaxPooling2D(pool_size=(2, 2)))
 
 classifier.add(Flatten())
 
-# classifier.add(Dropout(dropout))
+classifier.add(Dropout(dropout))
 classifier.add(Dense(output_dim=500, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
-# classifier.add(Dropout(dropout))
+classifier.add(Dropout(dropout))
 classifier.add(Dense(output_dim=500, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
-# classifier.add(Dropout(dropout))
+classifier.add(Dropout(dropout))
 classifier.add(Dense(output_dim=30, activation='tanh'))
 
-
+#
 # classifier.add(Convolution2D(32, 3, 3, input_shape=x_train[0].shape, activation='relu'))
 # classifier.add(Convolution2D(32, 3, 3, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
 # classifier.add(MaxPooling2D(pool_size=(2, 2)))
@@ -103,15 +103,15 @@ classifier.add(Dense(output_dim=30, activation='tanh'))
 # classifier.add(Dense(output_dim=2048, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
 # classifier.add(Dense(output_dim=1024, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
 # classifier.add(Dense(output_dim=1024, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
-# # classifier.add(Dropout(dropout))
+# classifier.add(Dropout(dropout))
 # classifier.add(Dense(output_dim=512, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
-# # classifier.add(Dropout(dropout))
+# classifier.add(Dropout(dropout))
 # classifier.add(Dense(output_dim=256, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
-# # classifier.add(Dropout(dropout))
+# classifier.add(Dropout(dropout))
 # classifier.add(Dense(output_dim=128, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
-# # classifier.add(Dropout(dropout))
+# classifier.add(Dropout(dropout))
 # classifier.add(Dense(output_dim=64, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
-# # classifier.add(Dropout(dropout))
+# classifier.add(Dropout(dropout))
 # classifier.add(Dense(output_dim=30, activation='tanh'))
 
 # Compiling the CNN
@@ -124,7 +124,7 @@ if not os.path.exists('TFlogs'):
     os.makedirs('TFlogs')
 
 
-tensorboard = TensorBoard(log_dir='TFlogs/logs/{}'.format(time()))
+tensorboard = TensorBoard(log_dir='TFlogs/logs3/{}'.format(time()))
 
 history = classifier.fit(x=x_train, y=y_train, batch_size=batch_size, 
                          epochs=np_epochs, verbose=1, callbacks=[tensorboard], validation_data=(x_test, y_test))
