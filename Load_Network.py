@@ -44,21 +44,26 @@ def display_pre(data, predict):
     plt.scatter(y[0::2] * 48 + 48, y[1::2] * 48 + 48, marker='o', s=10, c='r')
 
 
-json = 'weights/150.json'
-h5 = 'weights/150.h5'
+def load_model():
+    json = 'weights/150.json'
+    h5 = 'weights/150.h5'
 
-# Model reconstruction from JSON file
-with open(json, 'r') as f:
-    model = model_from_json(f.read())
+    # Model reconstruction from JSON file
+    with open(json, 'r') as f:
+        model = model_from_json(f.read())
 
-# Load weights into the new model
-model.load_weights(h5)
-model.compile(optimizer='adagrad', loss='mean_squared_error', metrics=['accuracy', metrics.mean_squared_error])
+    # Load weights into the new model
+    model.load_weights(h5)
+    model.compile(optimizer='adagrad', loss='mean_squared_error', metrics=['accuracy', metrics.mean_squared_error])
+    return model
 
-x_submit, _ = load(False)
 
-predicts = model.predict(x_submit)
+if __name__ == '__main__':
 
-i = 0
-display_pre(x_submit[i], predicts[i])
+    x_submit, _ = load(False)
+    model = load_model()
+    predicts = model.predict(x_submit)
+
+    i = 0
+    display_pre(x_submit[i], predicts[i])
 
