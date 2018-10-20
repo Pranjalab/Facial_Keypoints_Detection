@@ -60,47 +60,49 @@ def load_model():
 
 
 def save_pre(predicts, imageid):
-    feature = ['left_eye_center_x',
-               'left_eye_center_y',
-               'right_eye_center_x',
-               'right_eye_center_y',
-               'left_eye_inner_corner_x',
-               'left_eye_inner_corner_y',
-               'left_eye_outer_corner_x',
-               'left_eye_outer_corner_y',
-               'right_eye_inner_corner_x',
-               'right_eye_inner_corner_y',
-               'right_eye_outer_corner_x',
-               'right_eye_outer_corner_y',
-               'left_eyebrow_inner_end_x',
-               'left_eyebrow_inner_end_y',
-               'left_eyebrow_outer_end_x',
-               'left_eyebrow_outer_end_y',
-               'right_eyebrow_inner_end_x',
-               'right_eyebrow_inner_end_y',
-               'right_eyebrow_outer_end_x',
-               'right_eyebrow_outer_end_y',
-               'nose_tip_x',
-               'nose_tip_y',
-               'mouth_left_corner_x',
-               'mouth_left_corner_y',
-               'mouth_right_corner_x',
-               'mouth_right_corner_y',
-               'mouth_center_top_lip_x',
-               'mouth_center_top_lip_y',
-               'mouth_center_bottom_lip_x',
-               'mouth_center_bottom_lip_y']
-    with open('data\submission.csv', '+w') as file:
-        file.write('RowId,ImageId,FeatureName,Location\n')
-        rowid = 0
+    feature_dis = {'left_eye_center_x': 0,
+                   'left_eye_center_y': 1,
+                   'left_eye_inner_corner_x': 4,
+                   'left_eye_inner_corner_y': 5,
+                   'left_eye_outer_corner_x': 6,
+                   'left_eye_outer_corner_y': 7,
+                   'left_eyebrow_inner_end_x': 12,
+                   'left_eyebrow_inner_end_y': 13,
+                   'left_eyebrow_outer_end_x': 14,
+                   'left_eyebrow_outer_end_y': 15,
+                   'mouth_center_bottom_lip_x': 28,
+                   'mouth_center_bottom_lip_y': 29,
+                   'mouth_center_top_lip_x': 26,
+                   'mouth_center_top_lip_y': 27,
+                   'mouth_left_corner_x': 22,
+                   'mouth_left_corner_y': 23,
+                   'mouth_right_corner_x': 24,
+                   'mouth_right_corner_y': 25,
+                   'nose_tip_x': 20,
+                   'nose_tip_y': 21,
+                   'right_eye_center_x': 2,
+                   'right_eye_center_y': 3,
+                   'right_eye_inner_corner_x': 8,
+                   'right_eye_inner_corner_y': 9,
+                   'right_eye_outer_corner_x': 10,
+                   'right_eye_outer_corner_y': 11,
+                   'right_eyebrow_inner_end_x': 16,
+                   'right_eyebrow_inner_end_y': 17,
+                   'right_eyebrow_outer_end_x': 18,
+                   'right_eyebrow_outer_end_y': 19}
 
-        for i in range(len(predicts)):
-            values = predicts[i]
-            id = imageid[i]
-            for j in range(len(values)):
-                rowid += 1
-                value = values[j] * 48 + 48
-                file.write(str(rowid) + ',' + str(id) + ',' + feature[j] + ',' + str(value) + '\n')
+    df = read_csv('data/IdLookupTable.csv')
+    imageIds = df['ImageId']
+    features = df['FeatureName']
+
+    with open('submission.csv', '+w') as file:
+        file.write('RowId,ImageId,FeatureName,Location\n')
+        for i in range(len(imageIds)):
+            imageid = imageIds[i]
+            feature = features[i]
+            feature_index = feature_dis[feature]
+            value = predicts[imageid - 1][feature_index] * 48 + 48
+            file.write(str(i + 1) + ',' + str(imageid) + ',' + str(feature) + ',' + str(value) + '\n')
 
 
 def test_predict():
