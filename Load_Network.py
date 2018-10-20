@@ -32,10 +32,11 @@ def load(train_flag=True):
         X, y = shuffle(X, y, random_state=42)  # shuffle train data
         y = y.astype(np.float32)
     else:
-        y = None
+        y = df['ImageId']
 
     X = X.reshape(-1, 96, 96, 1)
     return X, y
+
 
 def display_pre(data, predict):
     y = predict
@@ -58,12 +59,61 @@ def load_model():
     return model
 
 
-if __name__ == '__main__':
+def save_pre(predicts, imageid):
+    feature = ['left_eye_center_x',
+               'left_eye_center_y',
+               'right_eye_center_x',
+               'right_eye_center_y',
+               'left_eye_inner_corner_x',
+               'left_eye_inner_corner_y',
+               'left_eye_outer_corner_x',
+               'left_eye_outer_corner_y',
+               'right_eye_inner_corner_x',
+               'right_eye_inner_corner_y',
+               'right_eye_outer_corner_x',
+               'right_eye_outer_corner_y',
+               'left_eyebrow_inner_end_x',
+               'left_eyebrow_inner_end_y',
+               'left_eyebrow_outer_end_x',
+               'left_eyebrow_outer_end_y',
+               'right_eyebrow_inner_end_x',
+               'right_eyebrow_inner_end_y',
+               'right_eyebrow_outer_end_x',
+               'right_eyebrow_outer_end_y',
+               'nose_tip_x',
+               'nose_tip_y',
+               'mouth_left_corner_x',
+               'mouth_left_corner_y',
+               'mouth_right_corner_x',
+               'mouth_right_corner_y',
+               'mouth_center_top_lip_x',
+               'mouth_center_top_lip_y',
+               'mouth_center_bottom_lip_x',
+               'mouth_center_bottom_lip_y']
+    with open('data\submission.csv', '+w') as file:
+        file.write('RowId,ImageId,FeatureName,Location\n')
+        rowid = 0
 
-    x_submit, _ = load(False)
+        for i in range(len(predicts)):
+            values = predicts[i]
+            id = imageid[i]
+            for j in range(len(values)):
+                rowid += 1
+                value = values[j] * 48 + 48
+                file.write(str(rowid) + ',' + str(id) + ',' + feature[j] + ',' + str(value) + '\n')
+
+
+def test_predict():
+    x_train, y_train = load()
+    x_submit, ImageID = load(False)
     model = load_model()
     predicts = model.predict(x_submit)
 
-    i = 0
-    display_pre(x_submit[i], predicts[i])
+    # i = 0
+    # display_pre(x_submit[i], predicts[i])
 
+    save_pre(predicts, ImageID)
+
+
+if __name__ == '__main__':
+    test_predict()
