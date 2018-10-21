@@ -10,7 +10,14 @@ import numpy as np
 from pandas.io.parsers import read_csv
 from sklearn.utils import shuffle
 from matplotlib import pyplot as plt
-import PyMail
+from keras.models import Sequential
+from keras.layers import Dense, Dropout, Convolution2D, MaxPooling2D, Flatten
+from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.model_selection  import train_test_split
+from keras.callbacks import TensorBoard
+from keras import regularizers, metrics
+from time import time
+import pickle
 
 
 def load(train_flag=True):
@@ -45,15 +52,6 @@ def load(train_flag=True):
     return X, y
 
 
-from keras.models import Sequential
-from keras.layers import Dense, Dropout, Convolution2D, MaxPooling2D, Flatten
-from sklearn.metrics import classification_report, confusion_matrix
-from sklearn.model_selection  import train_test_split
-from keras.callbacks import TensorBoard
-from keras import regularizers, metrics
-from time import time
-import pickle
-
 x, y = load()
 x_submit, _ = load(False)
 
@@ -87,33 +85,6 @@ classifier.add(Dense(output_dim=500, activation='relu',kernel_regularizer=l2, ac
 classifier.add(Dropout(dropout))
 classifier.add(Dense(output_dim=30, activation='tanh'))
 
-#
-# classifier.add(Convolution2D(32, 3, 3, input_shape=x_train[0].shape, activation='relu'))
-# classifier.add(Convolution2D(32, 3, 3, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
-# classifier.add(MaxPooling2D(pool_size=(2, 2)))
-# classifier.add(Convolution2D(64, 3, 3, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
-# classifier.add(Convolution2D(64, 3, 3, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
-# classifier.add(MaxPooling2D(pool_size=(2, 2)))
-# classifier.add(Convolution2D(128, 3, 3, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
-# classifier.add(Convolution2D(128, 3, 3, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
-# classifier.add(MaxPooling2D(pool_size=(2, 2)))
-#
-# classifier.add(Flatten())
-#
-# classifier.add(Dense(output_dim=2048, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
-# classifier.add(Dense(output_dim=1024, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
-# classifier.add(Dense(output_dim=1024, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
-# classifier.add(Dropout(dropout))
-# classifier.add(Dense(output_dim=512, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
-# classifier.add(Dropout(dropout))
-# classifier.add(Dense(output_dim=256, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
-# classifier.add(Dropout(dropout))
-# classifier.add(Dense(output_dim=128, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
-# classifier.add(Dropout(dropout))
-# classifier.add(Dense(output_dim=64, activation='relu',kernel_regularizer=l2, activity_regularizer=l1))
-# classifier.add(Dropout(dropout))
-# classifier.add(Dense(output_dim=30, activation='tanh'))
-
 # Compiling the CNN
 classifier.compile(optimizer='adagrad', loss='mean_squared_error', metrics=['accuracy', metrics.mean_squared_error])
  
@@ -128,9 +99,7 @@ tensorboard = TensorBoard(log_dir='TFlogs/logs3/{}'.format(time()))
 
 history = classifier.fit(x=x_train, y=y_train, batch_size=batch_size, 
                          epochs=np_epochs, verbose=1, callbacks=[tensorboard], validation_data=(x_test, y_test))
-
 metrics = classifier.evaluate(x_test, y_test, batch_size=batch_size)
-
 
 # serialize model to JSON
 if not os.path.exists('weights'):
@@ -149,11 +118,12 @@ pickle.dump(history.history, f)
 f.close()
 
 # Get Notification Using PyMail
-pymail = PyMail.pymail()
-pymail.set_sent_address('pranjalab@gmail.com')
-pymail.set_subject("Training Complete with {} epochs".format(str(np_epochs)))
-pymail.set_body("Accuracy: " + str(metrics[0]) + "%\n\nLoss:\n\n" + str(metrics[1]))
-pymail.send_mail()
+# import PyMail
+# pymail = PyMail.pymail()
+# pymail.set_sent_address('pranjalab@gmail.com')
+# pymail.set_subject("Training Complete with {} epochs".format(str(np_epochs)))
+# pymail.set_body("Accuracy: " + str(metrics[0]) + "%\n\nLoss:\n\n" + str(metrics[1]))
+# pymail.send_mail()
 
 
 

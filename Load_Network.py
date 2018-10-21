@@ -111,8 +111,8 @@ def test_predict():
     model = load_model()
     predicts = model.predict(x_submit)
 
-    # i = 0
-    # display_pre(x_submit[i], predicts[i])
+    i = 0
+    display_pre(x_submit[i], predicts[i])
 
     save_pre(predicts, ImageID)
 
